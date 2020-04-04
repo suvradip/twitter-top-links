@@ -6,6 +6,7 @@ import Card from '../Card/Card';
 import ListItems from '../List/List';
 import MediaListItems from '../MediaList/MediaList';
 import apiAgent from '../../util/api';
+import SearchBar from '../SearchBar/SearchBar';
 
 class App extends Component {
    constructor(props) {
@@ -17,17 +18,19 @@ class App extends Component {
          topUsers: [],
          topDomains: [],
          hasScrolled: false,
+         query: '',
       };
    }
 
    componentDidMount() {
       const { page } = this.state;
-      const promises = [apiAgent.tweets.getAll(page), apiAgent.users.getAll()];
+      const promises = [apiAgent.tweets.getAll({ page }), apiAgent.users.getAll()];
       Promise.all(promises).then(([tweetsData, userData]) =>
          this.setState({
             tweets: tweetsData.data,
             topUsers: userData.data.topUsers,
             topDomains: userData.data.topLinks,
+            enableBtn: tweetsData.data.count === 10,
          })
       );
 
@@ -38,11 +41,20 @@ class App extends Component {
       this.setState(
          (state) => ({ page: state.page + 1 }),
          () => {
-            const { page, tweets } = this.state;
-            Promise.all([apiAgent.tweets.getAll(page)]).then(([val]) =>
-               this.setState({ tweets: tweets.concat(val.data), enableBtn: val.count !== 0 })
+            const { page, tweets, query } = this.state;
+            const promises = [apiAgent.tweets.getAll({ page, query })];
+            Promise.all(promises).then(([val]) =>
+               this.setState({ tweets: tweets.concat(val.data), enableBtn: val.count === 10 })
             );
          }
+      );
+   };
+
+   searchAction = (value = '') => {
+      console.log('fired search', value);
+      this.setState({ query: value });
+      Promise.all([apiAgent.tweets.getAll({ query: value })]).then(([val]) =>
+         this.setState({ tweets: val.data, enableBtn: val.count === 10 })
       );
    };
 
@@ -77,6 +89,11 @@ class App extends Component {
          <div className='container-fluid'>
             <Navbar />
             <div className='container'>
+               <div className='row'>
+                  <div className='col-12 text-center'>
+                     <SearchBar action={this.searchAction} />
+                  </div>
+               </div>
                <div className='row'>
                   <div className='col-3'>
                      <div className='most-active-user'>

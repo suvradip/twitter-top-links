@@ -107,7 +107,7 @@ class Twitter {
             });
 
             /* hashtags filtering */
-            tweetFilter.hashtags = tweet.entities.hashtags.map((tag) => tag.text);
+            tweetFilter.hashtags = tweet.entities.hashtags.map((tag) => `#${tag.text}`);
 
             validTweets.push(tweetFilter);
          }

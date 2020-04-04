@@ -15,4 +15,11 @@ const schema = new Schema({
    createdAt: { type: String, required: true },
 });
 
+schema.index(
+   { hashtags: 'text', location: 'text', tweetPostedBy: 'text', name: 'text', text: 'text' },
+   { weights: { hashtags: 1, tweetPostedBy: 1, name: 2, location: 2, text: 3 } }
+);
+
+// schema.index({ '$**': 'text' });
+
 module.exports = mongoose.model('Tweet', schema);

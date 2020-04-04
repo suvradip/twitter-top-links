@@ -5,12 +5,14 @@ const port = process.env.PORT || '8080';
 
 const API_ROOT = isProd ? '/' : `http://localhost:${port}/api/v1`;
 
-const limit = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
+const limitOffset = (count, p) => `limit=${count}&offset=${p ? p * count : 0}`;
 const responseBody = (res) => res.data;
 
 const tweets = {
-   getAll: (page) => axios.get(`${API_ROOT}/tweets/?${limit(10, page)}`).then(responseBody),
-   //  get: (slug) => axios.get(`${API_ROOT}/tweets/${slug}`).then(responseBody),
+   getAll: ({ page, limit = 10, query = '' }) =>
+      axios
+         .get(`${API_ROOT}/tweets/?${limitOffset(limit, page)}&query=${encodeURIComponent(query)}`)
+         .then(responseBody),
 };
 
 const users = {
@@ -18,7 +20,7 @@ const users = {
 };
 
 const domains = {
-   getAll: (page) => axios.get(`${API_ROOT}/users/?${limit(10, page)}`).then(responseBody),
+   getAll: (page) => axios.get(`${API_ROOT}/users/?${limitOffset(10, page)}`).then(responseBody),
 };
 
 export default {

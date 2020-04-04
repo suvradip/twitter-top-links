@@ -7,24 +7,17 @@ const { Tweet } = require('../../models');
 router.get('/', async (req, res) => {
    debug('get /api/v1/tweets/ request received');
 
-   const { hashTags = '', locations = '', limit, offset } = req.query;
-   const parsedTags = hashTags === '' ? [] : hashTags.split(',');
+   const { limit, offset, query = '' } = req.query;
    const parsedLimit = typeof limit !== 'undefined' && !Number.isNaN(Number(limit)) ? Number(limit) : 10;
    const parsedSkip = typeof offset !== 'undefined' && !Number.isNaN(Number(offset)) ? Number(offset) : 0;
    const Query = {};
 
-   if (Array.isArray(parsedTags) && parsedTags.length > 0) {
-      const regXTags = parsedTags.map((opt) => new RegExp(opt, 'i'));
-      Query.hashtags = { $all: regXTags };
-      debug('hashtags prepared');
+   if (query !== '') {
+      debug(`requested query: ${query}`);
+      Query.$text = { $search: query };
    }
 
-   if (typeof locations === 'string' && locations !== '') {
-      Query.location = new RegExp(locations, 'i');
-      debug('location provided');
-   }
-
-   Promise.all([Tweet.find(Query).skip(parsedSkip).limit(parsedLimit).lean()])
+   Promise.all([Tweet.find(Query).skip(parsedSkip).limit(parsedLimit).sort({ createdAt: -1 }).lean()])
       .then(([tweets]) => {
          debug('Tweets retrieved from DB');
          res.json({

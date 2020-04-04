@@ -16,12 +16,12 @@ const Card = ({ data }) => {
    const minutesDiff = differenceInMinutes(today, date);
 
    let time;
-   if (dayDiff !== 0) {
-      time = `${dayDiff} days ago`;
-   } else if (hoursDiff !== 0) {
+   if (minutesDiff < 60) {
+      time = `${minutesDiff} minutes ago`;
+   } else if (hoursDiff < 24) {
       time = `${hoursDiff} hours ago`;
    } else {
-      time = `${minutesDiff} minutes ago`;
+      time = `${dayDiff} days ago`;
    }
 
    const dp = typeof image !== 'undefined' ? image : profileImage;
@@ -44,6 +44,7 @@ const Card = ({ data }) => {
             <div className='card-text'>
                <pre className='contents'>{data.text}</pre>
             </div>
+            <p className='hashtags'>{data.hashtags.map((h) => `${h}`).join(' ')}</p>
             <p className='footer-items'>
                <a
                   href={data.urls[0].expandedURL}
@@ -69,6 +70,7 @@ Card.propTypes = {
       text: PropTypes.string.isRequired,
       image: PropTypes.string,
       urls: PropTypes.array,
+      hashtags: PropTypes.array,
    }),
 };
 
