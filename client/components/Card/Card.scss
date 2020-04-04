@@ -23,9 +23,16 @@
       }
    }
 
-   p.text-right {
-      margin: 0;
-      font-size: 12px;
+   .footer-items {
+      margin-top: 30px;
+      margin-bottom: 0;
+      display: flex;
+      justify-content: space-between;
+      .text-right {
+         margin: 0;
+         font-size: 12px;
+         align-self: center;
+      }
    }
 
    .contents {

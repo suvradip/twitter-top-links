@@ -4,7 +4,7 @@
 const Twit = require('twit');
 const consola = require('consola');
 const { Tweet, User } = require('../models');
-const { sortObjByValues } = require('../util');
+const { sortObjByDesc } = require('../util');
 
 class Twitter {
    constructor() {
@@ -49,8 +49,8 @@ class Twitter {
       }
 
       await Twitter.saveUserInfo(this.twitterUserId, {
-         topLinks: sortObjByValues(this.links),
-         topUsers: sortObjByValues(this.users),
+         topLinks: sortObjByDesc(this.links),
+         topUsers: sortObjByDesc(this.users, 'count'),
       });
       return true;
    }
@@ -85,18 +85,18 @@ class Twitter {
             };
 
             if (Object.hasOwnProperty.call(this.users, tweetPostedBy)) {
-               this.users[tweetPostedBy] += 1;
+               this.users[tweetPostedBy].count += 1;
             } else {
-               this.users[tweetPostedBy] = 1;
+               this.users[tweetPostedBy] = { count: 1, image: profile_image_url_https };
             }
 
             /* urls filtering */
             tweetFilter.urls = tweet.entities.urls.map((url) => {
-               const { hostName } = new URL(url.expanded_url);
-               if (Object.hasOwnProperty.call(this.links, hostName)) {
-                  this.links[hostName] += 1;
+               const { hostname } = new URL(url.expanded_url);
+               if (Object.hasOwnProperty.call(this.links, hostname)) {
+                  this.links[hostname] += 1;
                } else {
-                  this.links[hostName] = 1;
+                  this.links[hostname] = 1;
                }
 
                return {

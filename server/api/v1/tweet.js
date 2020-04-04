@@ -5,7 +5,7 @@ const TwitterCtrl = require('../../controller/twitter');
 const { Tweet } = require('../../models');
 
 router.get('/', async (req, res) => {
-   debug('get / request received');
+   debug('get /api/v1/tweets/ request received');
 
    const { hashTags = '', locations = '', limit, offset } = req.query;
    const parsedTags = hashTags === '' ? [] : hashTags.split(',');
@@ -41,7 +41,7 @@ router.get('/', async (req, res) => {
 
 const twitter = new TwitterCtrl();
 router.get('/process', async (req, res) => {
-   debug('get /process request received');
+   debug('get /api/v1/tweets/process request received');
    try {
       await twitter.fetch();
       res.json({

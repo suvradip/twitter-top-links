@@ -14,12 +14,24 @@ class App extends Component {
          tweets: [],
          page: 0,
          enableBtn: true,
+         topUsers: [],
+         topDomains: [],
+         hasScrolled: false,
       };
    }
 
    componentDidMount() {
       const { page } = this.state;
-      Promise.all([apiAgent.tweets.getAll(page)]).then(([val]) => this.setState({ tweets: val.data }));
+      const promises = [apiAgent.tweets.getAll(page), apiAgent.users.getAll()];
+      Promise.all(promises).then(([tweetsData, userData]) =>
+         this.setState({
+            tweets: tweetsData.data,
+            topUsers: userData.data.topUsers,
+            topDomains: userData.data.topLinks,
+         })
+      );
+
+      window.addEventListener('scroll', this.onScroll);
    }
 
    actionLoadMore = () => {
@@ -34,8 +46,24 @@ class App extends Component {
       );
    };
 
+   onScroll = () => {
+      const position = document.body.scrollTop || document.documentElement.scrollTop;
+
+      const { hasScrolled } = this.state;
+      if (position > 100 && !hasScrolled) {
+         this.setState({ hasScrolled: true });
+      } else if (position < 100 && hasScrolled) {
+         this.setState({ hasScrolled: false });
+      }
+   };
+
+   gotoTop = () => {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+   };
+
    render() {
-      const { tweets, enableBtn } = this.state;
+      const { tweets, enableBtn, topUsers, topDomains, hasScrolled } = this.state;
       const LoadMoreBtn = () => {
          return (
             <p className='text-center'>
@@ -51,8 +79,10 @@ class App extends Component {
             <div className='container'>
                <div className='row'>
                   <div className='col-3'>
-                     <h5 className='small-heading'>Most active</h5>
-                     <MediaListItems />
+                     <div className='most-active-user'>
+                        <h5 className='small-heading'>Most active</h5>
+                        <MediaListItems data={topUsers} />
+                     </div>
                   </div>
                   <div className='col-6'>
                      <div className='tweets-wrapper'>
@@ -69,9 +99,16 @@ class App extends Component {
                   </div>
                   <div className='col-3'>
                      <h5 className='small-heading'>Trending domains</h5>
-                     <ListItems />
+                     <ListItems data={topDomains} />
                   </div>
                </div>
+               <p>
+                  {hasScrolled && (
+                     <button type='button' className='btn-gotoTop btn btn-secondary' onClick={this.gotoTop}>
+                        &uarr;
+                     </button>
+                  )}
+               </p>
             </div>
          </div>
       );

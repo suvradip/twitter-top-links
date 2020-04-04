@@ -33,15 +33,28 @@ const Card = ({ data }) => {
                <img src={dp} className='card-img' alt='' />
                <div className='user-info'>
                   <h5 className='card-title'>{data.name}</h5>
-                  <h6> @{data.tweetPostedBy} </h6>
+                  <h6>
+                     <a rel='noopener noreferrer' target='_blank' href={`https://twitter.com/${data.tweetPostedBy}`}>
+                        @{data.tweetPostedBy}
+                     </a>{' '}
+                  </h6>
                </div>
             </div>
 
             <div className='card-text'>
                <pre className='contents'>{data.text}</pre>
             </div>
-            <p className='text-right'>
-               <span> {time}</span>
+            <p className='footer-items'>
+               <a
+                  href={data.urls[0].expandedURL}
+                  className='btn btn-primary btn-sm'
+                  rel='noopener noreferrer'
+                  target='_blank'
+               >
+                  View Tweet
+               </a>
+
+               <span className='text-right'> {time}</span>
             </p>
          </div>
       </div>
@@ -55,6 +68,7 @@ Card.propTypes = {
       tweetPostedBy: PropTypes.string.isRequired,
       text: PropTypes.string.isRequired,
       image: PropTypes.string,
+      urls: PropTypes.array,
    }),
 };
 

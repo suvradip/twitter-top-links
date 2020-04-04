@@ -10,11 +10,11 @@ const responseBody = (res) => res.data;
 
 const tweets = {
    getAll: (page) => axios.get(`${API_ROOT}/tweets/?${limit(10, page)}`).then(responseBody),
-   get: (slug) => axios.get(`${API_ROOT}/tweets/${slug}`).then(responseBody),
+   //  get: (slug) => axios.get(`${API_ROOT}/tweets/${slug}`).then(responseBody),
 };
 
 const users = {
-   getAll: (page) => axios.get(`${API_ROOT}/users/?${limit(10, page)}`).then(responseBody),
+   getAll: () => axios.get(`${API_ROOT}/users/`).then(responseBody),
 };
 
 const domains = {
