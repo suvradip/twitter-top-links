@@ -50,9 +50,9 @@ class App extends Component {
       const position = document.body.scrollTop || document.documentElement.scrollTop;
 
       const { hasScrolled } = this.state;
-      if (position > 100 && !hasScrolled) {
+      if (position > 400 && !hasScrolled) {
          this.setState({ hasScrolled: true });
-      } else if (position < 100 && hasScrolled) {
+      } else if (position < 400 && hasScrolled) {
          this.setState({ hasScrolled: false });
       }
    };
