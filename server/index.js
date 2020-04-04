@@ -1,0 +1,24 @@
+require('dotenv').config();
+const express = require('express');
+const consola = require('consola');
+const bodyParser = require('body-parser');
+const logger = require('morgan');
+const apiRouter = require('./api');
+require('./config/mongodb')();
+
+const app = express();
+
+app.use(logger('dev'));
+app.use(bodyParser.json());
+/*  parse: requested data in application/x-www-form-urlencoded */
+app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use('/api', apiRouter);
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT);
+consola.ready({
+   message: `Server listening on http://localhost:${PORT}`,
+   badge: true,
+});

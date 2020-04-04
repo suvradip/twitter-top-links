@@ -1,0 +1,40 @@
+.card {
+   margin-bottom: 25px;
+   width: 100%;
+   .card-img {
+      width: 45px;
+      height: 45px;
+      border: 1px solid #aba0a0;
+      border-radius: 22px;
+      position: relative;
+      top: -12px;
+   }
+
+   .user-info {
+      display: inline-block;
+      margin-left: 15px;
+
+      .card-title {
+         margin-bottom: 5px;
+         + h6 {
+            font-size: 12px;
+            color: #0b4fea;
+         }
+      }
+   }
+
+   p.text-right {
+      margin: 0;
+      font-size: 12px;
+   }
+
+   .contents {
+      background-color: #fff;
+      font-family: 'Roboto';
+      padding: 0;
+      white-space: pre-wrap;
+      word-break: keep-all;
+      font-size: 15px;
+      font-weight: 400;
+   }
+}
