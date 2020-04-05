@@ -8,3 +8,9 @@ module.exports.sortObjByDesc = (obj, field = '') => {
       .slice(0, 10);
    return res;
 };
+
+module.exports.isLoggedIn = (req, res, next) => {
+   // if user is authenticated in the session, carry on
+   if (req.isAuthenticated()) return next();
+   return res.redirect('/api/v1/auth');
+};

@@ -13,6 +13,7 @@ const schema = new Schema({
    location: { type: String },
    image: { type: String },
    createdAt: { type: String, required: true },
+   twitterUserId: { type: String, required: true },
 });
 
 schema.index(

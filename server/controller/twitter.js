@@ -3,18 +3,19 @@
  */
 const Twit = require('twit');
 const consola = require('consola');
-const { Tweet, User } = require('../models');
+const { Tweet } = require('../models');
 const { sortObjByDesc } = require('../util');
+const UserInfo = require('./userInfo');
 
 class Twitter {
-   constructor() {
-      this.twitterUserId = 'suvradip';
+   constructor({ username, userToken, userSecretToken, lastId }) {
+      this.twitterUserId = username;
       /* Authentications of twitter api */
       this.twitInstance = new Twit({
          consumer_key: process.env.CONSUMER_API_KEY,
          consumer_secret: process.env.CONSUMER_API_SECRET_KEY,
-         access_token: process.env.ACCESS_TOKEN,
-         access_token_secret: process.env.ACCESS_TOKEN_SECRET,
+         access_token: userToken,
+         access_token_secret: userSecretToken,
       });
 
       /* 7 days */
@@ -22,7 +23,7 @@ class Twitter {
 
       this.links = {};
       this.users = {};
-      this.lastId = undefined;
+      this.lastId = lastId;
    }
 
    doWork() {
@@ -51,6 +52,7 @@ class Twitter {
       await Twitter.saveUserInfo(this.twitterUserId, {
          topLinks: sortObjByDesc(this.links),
          topUsers: sortObjByDesc(this.users, 'count'),
+         lastTweetId: this.lastId,
       });
       return true;
    }
@@ -82,6 +84,7 @@ class Twitter {
                name,
                tweetPostedBy,
                image: profile_image_url_https,
+               twitterUserId: this.twitterUserId,
             };
 
             if (Object.hasOwnProperty.call(this.users, tweetPostedBy)) {
@@ -136,10 +139,10 @@ class Twitter {
       }
    }
 
-   static async saveUserInfo(userName, { topLinks = [], topUsers = [] }) {
+   static async saveUserInfo(userName, { topLinks = [], topUsers = [], lastTweetId }) {
       try {
-         User.findOneOrCreate({ userName }, { userName, topLinks, topUsers });
-         console.log('data save');
+         const user = new UserInfo(userName);
+         await user.update({ topLinks, topUsers, lastTweetId }).lean();
       } catch (error) {
          consola.error(`Tweets pulling api error for user update:: ${userName}`);
          consola.error(error);

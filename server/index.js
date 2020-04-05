@@ -3,6 +3,11 @@ const express = require('express');
 const consola = require('consola');
 const bodyParser = require('body-parser');
 const logger = require('morgan');
+const passport = require('passport');
+const session = require('express-session');
+
+require('./config/passport')(passport); // pass passport for configuration
+
 const apiRouter = require('./api');
 require('./config/mongodb')();
 
@@ -12,6 +17,17 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 /*  parse: requested data in application/x-www-form-urlencoded */
 app.use(bodyParser.urlencoded({ extended: false }));
+
+app.use(
+   session({
+      secret: 'iLoveJavaScript', // session secret
+      resave: true,
+      saveUninitialized: true,
+   })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/api', apiRouter);
 

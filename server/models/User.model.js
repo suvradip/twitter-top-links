@@ -7,8 +7,10 @@ const schema = new Schema(
       id: { type: Schema.ObjectId },
       name: { type: String },
       userName: { type: String, required: true, index: true },
+      photo: { type: String },
       topLinks: { type: Schema.Types.Mixed, default: [] },
       topUsers: { type: Schema.Types.Mixed, default: [] },
+      lastTweetId: { type: String },
    },
    {
       timestamps: true,

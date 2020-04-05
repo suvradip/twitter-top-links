@@ -1,16 +1,21 @@
 const router = require('express').Router();
 const consola = require('consola');
 const debug = require('debug')('api:v1:tweet.js');
-const TwitterCtrl = require('../../controller/twitter');
+// const TwitterCtrl = require('../../controller/twitter');
 const { Tweet } = require('../../models');
+const { isLoggedIn } = require('../../util');
 
-router.get('/', async (req, res) => {
+router.get('/', isLoggedIn, async (req, res) => {
    debug('get /api/v1/tweets/ request received');
 
+   console.log(req.user);
+   const { user } = req;
    const { limit, offset, query = '' } = req.query;
    const parsedLimit = typeof limit !== 'undefined' && !Number.isNaN(Number(limit)) ? Number(limit) : 10;
    const parsedSkip = typeof offset !== 'undefined' && !Number.isNaN(Number(offset)) ? Number(offset) : 0;
-   const Query = {};
+   const Query = {
+      twitterUserId: user.username,
+   };
 
    if (query !== '') {
       debug(`requested query: ${query}`);
@@ -32,18 +37,18 @@ router.get('/', async (req, res) => {
       });
 });
 
-const twitter = new TwitterCtrl();
-router.get('/process', async (req, res) => {
-   debug('get /api/v1/tweets/process request received');
-   try {
-      await twitter.fetch();
-      res.json({
-         message: 'OK',
-      });
-   } catch (error) {
-      consola.error(error.message);
-      res.status(400).json({ message: 'Server Error', systemMessage: error.message });
-   }
-});
+// const twitter = new TwitterCtrl();
+// router.get('/process', async (req, res) => {
+//    debug('get /api/v1/tweets/process request received');
+//    try {
+//       await twitter.fetch();
+//       res.json({
+//          message: 'OK',
+//       });
+//    } catch (error) {
+//       consola.error(error.message);
+//       res.status(400).json({ message: 'Server Error', systemMessage: error.message });
+//    }
+// });
 
 module.exports = router;
