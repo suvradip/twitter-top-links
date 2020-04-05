@@ -1,3 +1,4 @@
+const debug = require('debug')('server:controller:userInfo.js');
 const User = require('../models/User.model');
 
 class UserInfo {
@@ -13,6 +14,7 @@ class UserInfo {
    }
 
    update({ topLinks, topUsers, name, photo, lastTweetId }) {
+      debug('Db update data - ', this.userName, { topLinks, topUsers, name, photo, lastTweetId });
       return User.updateOne(
          { userName: this.userName },
          {

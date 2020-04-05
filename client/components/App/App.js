@@ -20,19 +20,34 @@ class App extends Component {
          hasScrolled: false,
          query: '',
       };
+
+      const { location } = window;
+      const { search } = location;
+      const params = new URLSearchParams(search);
+      const user = params.get('user');
+      console.log(user);
+      if (user) {
+         window.localStorage.setItem('twitterUserName', user.toString());
+         location.replace(location.origin);
+      }
    }
 
    componentDidMount() {
       const { page } = this.state;
       const promises = [apiAgent.tweets.getAll({ page }), apiAgent.users.getAll()];
-      Promise.all(promises).then(([tweetsData, userData]) =>
-         this.setState({
-            tweets: tweetsData.data,
-            topUsers: userData.data.topUsers,
-            topDomains: userData.data.topLinks,
-            enableBtn: tweetsData.data.count === 10,
+      Promise.all(promises)
+         .then(([tweetsData, userData]) => {
+            //  console.log(tweetsData.data.count === 10, tweetsData);
+            this.setState({
+               tweets: tweetsData.data,
+               topUsers: userData.data.topUsers,
+               topDomains: userData.data.topLinks,
+               enableBtn: tweetsData.count === 10,
+            });
          })
-      );
+         .catch(() => {
+            window.location.href = `http://localhost:8080/api/v1/tweets/`;
+         });
 
       window.addEventListener('scroll', this.onScroll);
    }
@@ -43,9 +58,11 @@ class App extends Component {
          () => {
             const { page, tweets, query } = this.state;
             const promises = [apiAgent.tweets.getAll({ page, query })];
-            Promise.all(promises).then(([val]) =>
-               this.setState({ tweets: tweets.concat(val.data), enableBtn: val.count === 10 })
-            );
+            Promise.all(promises)
+               .then(([val]) => this.setState({ tweets: tweets.concat(val.data), enableBtn: val.count === 10 }))
+               .catch(() => {
+                  window.location.href = `http://localhost:8080/api/v1/tweets/`;
+               });
          }
       );
    };

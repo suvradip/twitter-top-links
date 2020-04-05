@@ -69,5 +69,6 @@
          "config-overrides.js"
       ],
       "delay": "2500"
-   }
+   },
+   "proxy": "http://localhost:8080"
 }

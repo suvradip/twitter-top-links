@@ -1,21 +1,18 @@
 const path = require('path');
 const fs = require('fs');
 const router = require('express').Router();
+const consola = require('consola');
 const passport = require('passport');
+const debug = require('debug')('server:api:v1:auth.js');
 const TwitterCtrl = require('../../controller/twitter');
 const UserInfo = require('../../controller/userInfo');
-
-function isLoggedIn(req, res, next) {
-   // if user is authenticated in the session, carry on
-   if (req.isAuthenticated()) return next();
-
-   return res.redirect('/api/v1/auth');
-}
+const isLoggedIn = require('../../middleware/authorization');
 
 const file = path.resolve(__dirname, '..', '..', 'views', 'index.html');
 const loginPage = fs.readFileSync(file, 'utf8');
 
 router.get('/', (req, res) => {
+   debug('Login page requested');
    res.send(loginPage);
 });
 
@@ -31,24 +28,36 @@ router.get(
 );
 
 router.get('/profile', isLoggedIn, async (req, res) => {
-   const { user } = req;
+   debug('GET /api/v1/auth/profile');
+   debug('Success callback fired');
 
+   const { user } = req;
    /* create a user in DB */
    const userInstance = new UserInfo(user.username);
    const newUser = await userInstance.save({ name: user.name, photo: user.photo });
+   try {
+      const twitter = new TwitterCtrl({
+         username: user.username,
+         userToken: user.token,
+         userSecretToken: user.tokenSecret,
+         lastId: newUser.lastTweetId,
+      });
 
-   const twitter = new TwitterCtrl({
-      username: user.username,
-      userToken: user.token,
-      userSecretToken: user.tokenSecret,
-      lastId: newUser.lastTweetId,
-   });
-   //  await twitter.fetch();
+      await twitter.fetch();
 
-   res.json({
-      user: req.user,
-      newUser,
-   });
+      debug('Data fetching from twitter complete.');
+      // res.json({
+      //    user: req.user,
+      //    newUser,
+      // });
+      res.redirect(`http://localhost:8081/?user=${user.username}`);
+   } catch (error) {
+      consola.error(error.message);
+      // res.status(400).json({
+      //    message: error.message,
+      // });
+      res.redirect(`http://localhost:8081/?user=${user.username}`);
+   }
 });
 
 module.exports = router;

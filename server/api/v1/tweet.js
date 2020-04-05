@@ -1,30 +1,29 @@
 const router = require('express').Router();
 const consola = require('consola');
-const debug = require('debug')('api:v1:tweet.js');
+const debug = require('debug')('server:api:v1:tweet.js');
 // const TwitterCtrl = require('../../controller/twitter');
 const { Tweet } = require('../../models');
-const { isLoggedIn } = require('../../util');
+const isLoggedIn = require('../../middleware/authorization');
 
 router.get('/', isLoggedIn, async (req, res) => {
-   debug('get /api/v1/tweets/ request received');
+   debug('Get /api/v1/tweets/ request received');
 
-   console.log(req.user);
-   const { user } = req;
+   const { userId } = req;
    const { limit, offset, query = '' } = req.query;
    const parsedLimit = typeof limit !== 'undefined' && !Number.isNaN(Number(limit)) ? Number(limit) : 10;
    const parsedSkip = typeof offset !== 'undefined' && !Number.isNaN(Number(offset)) ? Number(offset) : 0;
    const Query = {
-      twitterUserId: user.username,
+      twitterUserId: userId,
    };
 
    if (query !== '') {
-      debug(`requested query: ${query}`);
+      debug(`Requested query: ${query}`);
       Query.$text = { $search: query };
    }
 
-   Promise.all([Tweet.find(Query).skip(parsedSkip).limit(parsedLimit).sort({ createdAt: -1 }).lean()])
+   return Promise.all([Tweet.find(Query).skip(parsedSkip).limit(parsedLimit).sort({ createdAt: -1 }).lean()])
       .then(([tweets]) => {
-         debug('Tweets retrieved from DB');
+         debug('Tweets retrieved from DB and sent.');
          res.json({
             message: 'OK',
             count: tweets.length,

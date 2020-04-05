@@ -3,6 +3,7 @@
  */
 const Twit = require('twit');
 const consola = require('consola');
+const debug = require('debug')('server:controller:twitter.js');
 const { Tweet } = require('../models');
 const { sortObjByDesc } = require('../util');
 const UserInfo = require('./userInfo');
@@ -23,10 +24,12 @@ class Twitter {
 
       this.links = {};
       this.users = {};
-      this.lastId = lastId;
+      this.lastId = undefined;
+      this.lastTweetId = Number(lastId);
    }
 
    doWork() {
+      debug('Twitter data fetching started.');
       this.promises = [];
       return new Promise((resolve, reject) => {
          Promise.all([this.fetch()])
@@ -36,7 +39,7 @@ class Twitter {
    }
 
    async fetch() {
-      console.log('lastId', this.lastId);
+      debug('lastId', this.lastId);
       const { data } = await this.twitInstance.get('statuses/home_timeline', {
          include_entities: true,
          count: 200,
@@ -58,6 +61,7 @@ class Twitter {
    }
 
    sanitize(tweets) {
+      debug('sanitization start');
       const totalTweets = tweets.length;
       if (totalTweets === 0) return false;
 
@@ -67,6 +71,10 @@ class Twitter {
       for (let i = 0; i < totalTweets; i += 1) {
          const tweet = tweets[i];
          const createdAt = new Date(tweet.created_at);
+         if (tweet.id === this.lastTweetId) {
+            consola.info('Old tweets found in DB');
+            break;
+         }
 
          /* if tweet is older more than 7 days then discard it */
          if (createdAt > this.sinceDate || tweet.entities.urls.length > 0) {
@@ -118,6 +126,7 @@ class Twitter {
 
       /* saving to database */
       Twitter.saveTweets(validTweets);
+      debug('sanitization completed');
       return validTweets;
    }
 
@@ -131,7 +140,7 @@ class Twitter {
       } catch (error) {
          /* 11000: duplicate records */
          if (error.code === 11000) {
-            consola.info(error.errmsg);
+            consola.info('Duplicate data');
          } else {
             consola.error(`Error produced during data save.`);
          }
@@ -142,7 +151,7 @@ class Twitter {
    static async saveUserInfo(userName, { topLinks = [], topUsers = [], lastTweetId }) {
       try {
          const user = new UserInfo(userName);
-         await user.update({ topLinks, topUsers, lastTweetId }).lean();
+         await user.update({ topLinks, topUsers, lastTweetId });
       } catch (error) {
          consola.error(`Tweets pulling api error for user update:: ${userName}`);
          consola.error(error);
