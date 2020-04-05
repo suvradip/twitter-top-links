@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const isProd = process.env.NODE_ENV === 'production';
 const port = process.env.PORT || '8080';
-console.log(process.env);
 
 const API_ROOT = isProd ? '/api/v1' : `http://localhost:${port}/api/v1`;
 
