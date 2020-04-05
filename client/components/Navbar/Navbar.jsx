@@ -13,7 +13,9 @@ const Navbar = () => {
 
    return (
       <nav className='navbar navbar-light bg-light'>
-         <img src={logo} width='auto' height='60px' alt='demo logo' />
+         <a href='/'>
+            <img src={logo} width='auto' height='60px' alt='demo logo' />
+         </a>
          <button type='button' className='btn btn-outline-dark' onClick={logoutAction}>
             Logout{' '}
          </button>
