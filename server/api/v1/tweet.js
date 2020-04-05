@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const consola = require('consola');
 const debug = require('debug')('server:api:v1:tweet.js');
-// const TwitterCtrl = require('../../controller/twitter');
 const { Tweet } = require('../../models');
 const isLoggedIn = require('../../middleware/authorization');
 
@@ -35,19 +34,5 @@ router.get('/', isLoggedIn, async (req, res) => {
          res.status(400).json({ message: 'Server Error', systemMessage: error.message });
       });
 });
-
-// const twitter = new TwitterCtrl();
-// router.get('/process', async (req, res) => {
-//    debug('get /api/v1/tweets/process request received');
-//    try {
-//       await twitter.fetch();
-//       res.json({
-//          message: 'OK',
-//       });
-//    } catch (error) {
-//       consola.error(error.message);
-//       res.status(400).json({ message: 'Server Error', systemMessage: error.message });
-//    }
-// });
 
 module.exports = router;

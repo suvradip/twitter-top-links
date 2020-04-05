@@ -8,6 +8,11 @@ import MediaListItems from '../MediaList/MediaList';
 import apiAgent from '../../util/api';
 import SearchBar from '../SearchBar/SearchBar';
 
+function redirect() {
+   const isProd = process.env.NODE_ENV === 'production';
+   window.location.href = isProd ? '/api/v1/auth/' : `http://localhost:8080/api/v1/auth/`;
+}
+
 class App extends Component {
    constructor(props) {
       super(props);
@@ -25,7 +30,6 @@ class App extends Component {
       const { search } = location;
       const params = new URLSearchParams(search);
       const user = params.get('user');
-      console.log(user);
       if (user) {
          window.localStorage.setItem('twitterUserName', user.toString());
          location.replace(location.origin);
@@ -46,7 +50,7 @@ class App extends Component {
             });
          })
          .catch(() => {
-            window.location.href = `http://localhost:8080/api/v1/tweets/`;
+            redirect();
          });
 
       window.addEventListener('scroll', this.onScroll);
@@ -61,7 +65,7 @@ class App extends Component {
             Promise.all(promises)
                .then(([val]) => this.setState({ tweets: tweets.concat(val.data), enableBtn: val.count === 10 }))
                .catch(() => {
-                  window.location.href = `http://localhost:8080/api/v1/tweets/`;
+                  redirect();
                });
          }
       );

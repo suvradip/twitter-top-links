@@ -8,7 +8,7 @@ const path = require('path');
 const clientDir = path.resolve(__dirname, 'client');
 module.exports = {
    paths(paths) {
-      paths.dotenv = path.join(clientDir, '.env');
+      // paths.dotenv = path.join(clientDir, '.env');
       paths.appIndexJs = path.join(clientDir, 'index.js');
       paths.appSrc = path.join(clientDir);
       paths.appPublic = path.join(clientDir, 'public');
