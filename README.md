@@ -44,3 +44,7 @@ MONGODB_USER=
 MONGODB_PASSWORD=
 MONGODB_URL=
 ```
+
+### Dashboard
+
+![Simple dashboard](./dashboard.png)
