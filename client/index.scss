@@ -1,0 +1,15 @@
+@import '~bootstrap/scss/bootstrap.scss';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;1,700&display=swap');
+
+* {
+   box-sizing: border-box;
+   font-family: 'Roboto', sans-serif;
+}
+html {
+   scroll-behavior: smooth;
+}
+body {
+   margin: 0;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+}

@@ -1,0 +1,21 @@
+.container-fluid {
+   margin: 0;
+   padding: 0;
+}
+
+.container {
+   margin-top: 150px;
+
+   .small-heading {
+      font-size: 16px;
+      line-height: 1.5;
+      letter-spacing: 1px;
+   }
+
+   .btn-gotoTop {
+      position: fixed;
+      bottom: 50px;
+      right: 40px;
+      padding: 10px;
+   }
+}

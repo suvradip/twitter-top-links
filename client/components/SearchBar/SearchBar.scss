@@ -1,0 +1,14 @@
+.search-bar {
+   width: 60%;
+   margin: 0 auto;
+   margin-bottom: 40px;
+
+   input {
+      outline: none;
+      &:focus {
+         outline: none !important;
+         box-shadow: none !important;
+         border-color: #ced4da;
+      }
+   }
+}

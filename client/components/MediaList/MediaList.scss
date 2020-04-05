@@ -1,0 +1,25 @@
+.list-unstyled {
+   margin-top: 15px;
+   li {
+      margin-bottom: 15px;
+
+      .linkWrapper {
+         display: inline-flex;
+         text-decoration: none;
+         color: #000;
+
+         img {
+            height: 40px;
+            width: 40px;
+            border: 1px solid #ccc;
+            border-radius: 30px;
+         }
+
+         .small-text {
+            margin: 0;
+            font-size: 12px;
+            font-weight: 100;
+         }
+      }
+   }
+}
