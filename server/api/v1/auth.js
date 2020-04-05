@@ -10,10 +10,16 @@ const isLoggedIn = require('../../middleware/authorization');
 
 const file = path.resolve(__dirname, '..', '..', 'views', 'index.html');
 const loginPage = fs.readFileSync(file, 'utf8');
+const isProd = process.env.NODE_ENV === 'production';
 
 router.get('/', (req, res) => {
    debug('Login page requested');
    res.send(loginPage);
+});
+
+router.get('/logout', (req, res) => {
+   req.logout();
+   res.redirect('/api/v1/auth/');
 });
 
 router.get('/twitter', passport.authenticate('twitter'));
@@ -50,13 +56,19 @@ router.get('/profile', isLoggedIn, async (req, res) => {
       //    user: req.user,
       //    newUser,
       // });
-      res.redirect(`http://localhost:8081/?user=${user.username}`);
+      if (isProd) {
+         return res.redirect(`/?user=${user.username}`);
+      }
+      return res.redirect(`http://localhost:8081/?user=${user.username}`);
    } catch (error) {
       consola.error(error.message);
       // res.status(400).json({
       //    message: error.message,
       // });
-      res.redirect(`http://localhost:8081/?user=${user.username}`);
+      if (isProd) {
+         return res.redirect(`/?user=${user.username}`);
+      }
+      return res.redirect(`http://localhost:8081/?user=${user.username}`);
    }
 });
 

@@ -2,8 +2,9 @@ import axios from 'axios';
 
 const isProd = process.env.NODE_ENV === 'production';
 const port = process.env.PORT || '8080';
+console.log(process.env);
 
-const API_ROOT = isProd ? '/' : `http://localhost:${port}/api/v1`;
+const API_ROOT = isProd ? '/api/v1' : `http://localhost:${port}/api/v1`;
 
 const instance = axios.create({
    baseURL: API_ROOT,
@@ -26,6 +27,7 @@ const tweets = {
 
 const users = {
    getAll: () => instance.get(`/users/`).then(responseBody),
+   logout: () => instance.get(`/auth/logout`).then(responseBody),
 };
 
 const domains = {

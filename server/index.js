@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const passport = require('passport');
 const session = require('express-session');
+const path = require('path');
 
 require('./config/passport')(passport); // pass passport for configuration
 
@@ -29,9 +30,11 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(express.static(path.join(__dirname, '..', 'build')));
+
 app.use('/api', apiRouter);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 app.listen(PORT);
 consola.ready({

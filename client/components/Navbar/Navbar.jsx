@@ -1,11 +1,13 @@
 import React from 'react';
 import logo from '../../images/logo.svg';
 import './Navbar.scss';
+import apiAgent from '../../util/api';
 
 const Navbar = () => {
    const logoutAction = () => {
       window.localStorage.removeItem('twitterUserName');
       const isProd = process.env.NODE_ENV === 'production';
+      apiAgent.users.logout();
       window.location.href = isProd ? '/api/v1/auth/' : `http://localhost:8080/api/v1/auth/`;
    };
 
