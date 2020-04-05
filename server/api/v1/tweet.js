@@ -20,7 +20,10 @@ router.get('/', isLoggedIn, async (req, res) => {
       Query.$text = { $search: query };
    }
 
-   return Promise.all([Tweet.find(Query).skip(parsedSkip).limit(parsedLimit).sort({ createdAt: -1 }).lean()])
+   return Promise.all([
+      // Tweet.find({ $query: Query, $orderby: { tweetId: 1 } })
+      Tweet.find(Query).sort({ createdAt: -1 }).skip(parsedSkip).limit(parsedLimit).lean(),
+   ])
       .then(([tweets]) => {
          debug('Tweets retrieved from DB and sent.');
          res.json({

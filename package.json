@@ -27,8 +27,8 @@
       "twit": "^2.2.11"
    },
    "scripts": {
-      "start": "node server/index.js",
-      "start:client": "react-app-rewired start",
+      "start": "NODE_ENV=production node server/index.js",
+      "start:client": "PORT=5481 react-app-rewired start",
       "build": "react-app-rewired build",
       "test": "react-app-rewired test",
       "eject": "react-scripts eject",

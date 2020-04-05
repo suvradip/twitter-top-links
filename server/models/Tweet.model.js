@@ -12,7 +12,7 @@ const schema = new Schema({
    name: { type: String, required: true },
    location: { type: String },
    image: { type: String },
-   createdAt: { type: String, required: true },
+   createdAt: { type: Date, required: true },
    twitterUserId: { type: String, required: true },
 });
 

@@ -47,16 +47,23 @@ class Twitter {
       });
 
       const tweets = this.sanitize(data);
-      if (tweets.length > 0) {
-         const p = await this.fetch();
-         return p;
-      }
 
       await Twitter.saveUserInfo(this.twitterUserId, {
          topLinks: sortObjByDesc(this.links),
          topUsers: sortObjByDesc(this.users, 'count'),
          lastTweetId: this.lastId,
       });
+
+      if (tweets.length > 0) {
+         const p = await this.fetch();
+         return p;
+      }
+
+      // await Twitter.saveUserInfo(this.twitterUserId, {
+      //    topLinks: sortObjByDesc(this.links),
+      //    topUsers: sortObjByDesc(this.users, 'count'),
+      //    lastTweetId: this.lastId,
+      // });
       return true;
    }
 
@@ -88,7 +95,7 @@ class Twitter {
                userId: id,
                tweetId: tweet.id,
                text: tweet.text,
-               createdAt: tweet.created_at,
+               createdAt,
                name,
                tweetPostedBy,
                image: profile_image_url_https,

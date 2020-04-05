@@ -59,7 +59,7 @@ router.get('/profile', isLoggedIn, async (req, res) => {
       if (isProd) {
          return res.redirect(`/?user=${user.username}`);
       }
-      return res.redirect(`http://localhost:8081/?user=${user.username}`);
+      return res.redirect(`http://localhost:5481/?user=${user.username}`);
    } catch (error) {
       consola.error(error.message);
       // res.status(400).json({
@@ -68,7 +68,7 @@ router.get('/profile', isLoggedIn, async (req, res) => {
       if (isProd) {
          return res.redirect(`/?user=${user.username}`);
       }
-      return res.redirect(`http://localhost:8081/?user=${user.username}`);
+      return res.redirect(`http://localhost:5481/?user=${user.username}`);
    }
 });
 

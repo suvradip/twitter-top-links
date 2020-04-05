@@ -52,7 +52,7 @@ const Card = ({ data }) => {
                   rel='noopener noreferrer'
                   target='_blank'
                >
-                  View Tweet
+                  View
                </a>
 
                <span className='text-right'> {time}</span>
